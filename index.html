@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="ObjEventTxRx.js"></script>
+<script>
+  // Listen for the event.
+  var listenerA = function (e) {
+    console.log('Event captured from listenerA', e.type);
+  };
+  var listenerB = function (e) {
+    console.log('Event captured from listenerB', e.type);
+  };
+
+  var objectToTest = {
+    purpose: 'to test',
+  };
+
+  // todo: think of a waaaay better name:
+  txRxIfy(objectToTest);
+
+  objectToTest.addEventListener('build', listenerA, false);
+  objectToTest.addEventListener('build', listenerB, false);
+  objectToTest.addEventListener('grock', listenerA, false);
+
+
+  // Dispatch the event.
+  objectToTest.dispatchEvent(new CustomEvent('build'));  // should fire A and B
+
+  objectToTest.removeEventListener('build', listenerB);
+
+  objectToTest.dispatchEvent(new CustomEvent('build'));  // should only fire A
+
+  objectToTest.removeEventListener('build', listenerA);
+
+  objectToTest.dispatchEvent(new CustomEvent('build')); // should fire nothing
+//
+  objectToTest.dispatchEvent(new CustomEvent('grock')); // Should fire A
+//
+  objectToTest.removeEventListener('grock', listenerA);
+//
+  objectToTest.dispatchEvent(new CustomEvent('grock')); // should fire nothing
+  objectToTest.dispatchEvent(new CustomEvent('build')); // should fire nothing
+</script>
+</body>
+</html>
